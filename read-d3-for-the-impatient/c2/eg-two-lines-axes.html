@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-with,initial-scale=1" />
+    <title>d3-eg</title>
+    <script src="../assets/js/d3.js"></script>
+    <style type="text/css">
+      /* ll */
+    </style>
+  </head>
+
+  <body onload="makeDemo3()">
+    <div id="root">hello 世界</div>
+    <svg id="demo1" width="600" height="300" style="background: whitesmoke" />
+    <script type="text/javascript">
+      // ..
+      function makeDemo3() {
+        d3.tsv('../data/examples-multiple.tsv').then(function (data) {
+          var svg = d3.select('svg'); //<1>
+
+          var pxX = svg.attr('width');
+          var pxY = svg.attr('height');
+
+          var makeScale = function (accessor, range) {
+            //<3>
+            return d3
+              .scaleLinear()
+              .domain(d3.extent(data, accessor))
+              .range(range)
+              .nice();
+          };
+          var scX = makeScale((d) => d['x'], [0, pxX]);
+          var scY1 = makeScale((d) => d['y1'], [pxY, 0]);
+          var scY2 = makeScale((d) => d['y2'], [pxY, 0]);
+
+          var drawData = function (g, accessor, curve) {
+            // draw circles
+            g.selectAll('circle')
+              .data(data)
+              .enter()
+              .append('circle')
+              .attr('r', 5)
+              .attr('cx', (d) => scX(d['x']))
+              .attr('cy', accessor);
+
+            // draw lines
+            var lnMkr = d3
+              .line()
+              .curve(curve) //<5>
+              .x((d) => scX(d['x']))
+              .y(accessor);
+
+            g.append('path').attr('fill', 'none').attr('d', lnMkr(data));
+          };
+
+          var g1 = svg.append('g'); //<6>
+          var g2 = svg.append('g');
+
+          drawData(g1, (d) => scY1(d['y1']), d3.curveStep); //<7>
+          drawData(g2, (d) => scY2(d['y2']), d3.curveNatural);
+
+          g1.selectAll('circle').attr('fill', 'green'); //<8>
+          g1.selectAll('path').attr('stroke', 'teal');
+
+          g2.selectAll('circle').attr('fill', 'blue');
+          g2.selectAll('path').attr('stroke', 'cyan');
+
+          // 绘制右侧坐标
+          var axMkr = d3.axisRight(scY1); //<9>
+          axMkr(svg.append('g')); //<10>
+
+          // 绘制左侧坐标
+          axMkr = d3.axisLeft(scY2);
+          svg
+            .append('g')
+            .attr('transform', 'translate(' + pxX + ',0)') //<11>
+            .call(axMkr); //<12>
+
+          // 绘制底部坐标
+          svg
+            .append('g')
+            .call(d3.axisTop(scX))
+            .attr('transform', 'translate(0,' + pxY + ')'); //<13>
+        });
+      }
+    </script>
+  </body>
+</html>

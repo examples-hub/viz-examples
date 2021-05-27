@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-with,initial-scale=1" />
+    <title>d3-eg</title>
+    <script src="../assets/js/d3.js"></script>
+    <!-- <script src="examples-demo1.js"></script> -->
+    <style type="text/css">
+      /* ll */
+    </style>
+  </head>
+
+  <body onload="makeList()">
+    <div id="root">hello 世界</div>
+    <svg id="demo1" width="600" height="300" style="background: whitesmoke" />
+    <script type="text/javascript">
+      // ..
+      function makeList() {
+        var vs = ['From East', 'to West,', 'at Home', 'is Best']; //<1>
+
+        d3.select('body') //<2>
+          .append('ul')
+          .selectAll('li') //<3>
+          .data(vs)
+          .enter() //<4>
+          .append('li')
+          .text((d) => d) //<5>
+          .on('click', function () {
+            this.toggleState = !this.toggleState; // <3> <4>
+            d3.select(this) // <5>
+              .transition()
+              .duration(1250) // <6>
+              .style('color', this.toggleState ? 'red' : 'black'); // <7>
+          });
+      }
+    </script>
+  </body>
+</html>

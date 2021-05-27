@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-with,initial-scale=1" />
+    <title>d3-eg</title>
+    <script src="../assets/js/d3.js"></script>
+    <style type="text/css">
+      /* ll */
+    </style>
+  </head>
+
+  <body onload="makeDemo1()">
+    <div id="root">hello 世界</div>
+    <svg id="demo1" width="600" height="300" style="background: whitesmoke" />
+    <script type="text/javascript">
+      // ..
+      function makeDemo1() {
+        //<1>
+        d3.tsv('../data/examples-simple.tsv').then(function (data) {
+          d3.select('svg') //<5>
+            .selectAll('circle') //<6>
+            .data(data) //<7>
+            .enter() //<8>
+            .append('circle') //<9>
+            .attr('r', 5)
+            .attr('fill', 'green')
+            .attr('cx', function (d) {
+              return d['x'];
+            })
+            .attr('cy', function (d) {
+              return d['y'];
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
