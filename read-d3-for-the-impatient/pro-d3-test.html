@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-with,initial-scale=1" />
+    <title>d3-eg</title>
+    <script src="./assets/js/d3.js"></script>
+    <!-- <script src="examples-demo1.js"></script> -->
+    <style type="text/css">
+      /* ll */
+    </style>
+  </head>
+
+  <body onload="makeDemo()">
+    <div id="root">hello 世界</div>
+    <!-- <svg id="demo1" width="600" height="300" style="background: whitesmoke" /> -->
+    <script type="text/javascript">
+      // ..
+
+      function chart() {
+        // Private Attributes declaration
+
+        function exports(_selection) {
+          _selection.each(function (_data) {
+            chartWidth = width - margin.left - margin.right;
+            chartHeight = height - margin.top - margin.bottom;
+            data = _data; // 提取数据
+
+            buildScales();
+            buildAxis();
+            buildSVG(this);
+            // .. Rest of building blocks
+          });
+        }
+
+        // API
+
+        return exports;
+
+        exports.height = function (_x) {
+          if (!arguments.length) {
+            return height;
+          }
+          height = _x;
+          return this;
+        };
+        exports.margin = function (_x) {
+          if (!arguments.length) {
+            return margin;
+          }
+          margin = { ...margin, ..._x };
+          return this;
+        };
+      }
+
+      const data = [{ x: 50, y: 5 }];
+      const myChart = chart();
+      const container = d3.select('.container');
+
+      myChart.height(300).width(600).margin({
+        top: 20,
+        bottom: 20,
+      });
+
+      container.datum(data).call(myChart);
+    </script>
+  </body>
+</html>
