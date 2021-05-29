@@ -11,7 +11,7 @@
   </head>
 
   <body onload="makeDemo3()">
-    <div id="root">hello 世界</div>
+    <div id="root">hello 坐标轴 axes</div>
     <svg id="demo1" width="600" height="300" style="background: whitesmoke" />
     <script type="text/javascript">
       // ..
@@ -23,17 +23,17 @@
           var pxY = svg.attr('height');
 
           var makeScale = function (accessor, range) {
-            //<3>
             return d3
               .scaleLinear()
               .domain(d3.extent(data, accessor))
               .range(range)
-              .nice();
+              .nice(); // 四舍五入
           };
           var scX = makeScale((d) => d['x'], [0, pxX]);
           var scY1 = makeScale((d) => d['y1'], [pxY, 0]);
           var scY2 = makeScale((d) => d['y2'], [pxY, 0]);
 
+          // 绘制一组数据对应的多个图形，这个方法可以作为一个可重用的组件
           var drawData = function (g, accessor, curve) {
             // draw circles
             g.selectAll('circle')
@@ -60,30 +60,32 @@
           drawData(g1, (d) => scY1(d['y1']), d3.curveStep); //<7>
           drawData(g2, (d) => scY2(d['y2']), d3.curveNatural);
 
-          g1.selectAll('circle').attr('fill', 'green'); //<8>
+          g1.selectAll('circle').attr('fill', 'green'); //<8> 创建图形与设置样式分离
           g1.selectAll('path').attr('stroke', 'teal');
 
           g2.selectAll('circle').attr('fill', 'blue');
           g2.selectAll('path').attr('stroke', 'cyan');
 
-          // 绘制右侧坐标
+          // 绘制左侧坐标轴，right是指label在marker的右边
           var axMkr = d3.axisRight(scY1); //<9>
           axMkr(svg.append('g')); //<10>
 
-          // 绘制左侧坐标
+          // 绘制右侧坐标轴，label在marker的左边
           axMkr = d3.axisLeft(scY2);
           svg
             .append('g')
-            .attr('transform', 'translate(' + pxX + ',0)') //<11>
-            .call(axMkr); //<12>
+            .attr('transform', 'translate(' + pxX + ',0)') //<11> 移动到视口右侧
+            .call(axMkr); //<12> 与<10>功能相同，但用法基于call，会调用axMkr(),g作为参数
 
-          // 绘制底部坐标
+          // 绘制底部坐标，label在marker的上方
           svg
             .append('g')
-            .call(d3.axisTop(scX))
-            .attr('transform', 'translate(0,' + pxY + ')'); //<13>
+            .call(d3.axisTop(scX)) // 注意这里先画轴再移动，上面是先移动，再画轴
+            .attr('transform', 'translate(0,' + pxY + ')'); //<13> 移动到最下方
         });
       }
+
+      // todo: 1. 设置padding； 2. 起点终点的圆点被截掉了一半，只显示了一半
     </script>
   </body>
 </html>

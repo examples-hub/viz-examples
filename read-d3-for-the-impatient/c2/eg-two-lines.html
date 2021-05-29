@@ -11,7 +11,7 @@
   </head>
 
   <body onload="makeDemo2()">
-    <div id="root">hello 世界</div>
+    <div id="root">hello 比例尺 scale: input domain -> output range</div>
     <svg id="demo1" width="600" height="300" style="background: whitesmoke" />
     <script type="text/javascript">
       // ..
@@ -28,7 +28,7 @@
           var scY1 = d3
             .scaleLinear() //<4>
             .domain(d3.extent(data, (d) => d['y1']))
-            .range([pxY, 0]); //<5>
+            .range([pxY, 0]); //<5> y轴的range要颠倒下
           var scY2 = d3
             .scaleLinear()
             .domain(d3.extent(data, (d) => d['y2']))
@@ -49,7 +49,7 @@
           d3.select('svg') //<12>
             .append('g') // 添加新group元素，不是前一个g
             .attr('id', 'ds2')
-            .attr('fill', 'blue') //<13> 统一设置颜色
+            .attr('fill', 'blue') //<13> 统一设置圆点颜色
             .selectAll('circle') //<14>
             .data(data)
             .enter()
@@ -60,7 +60,7 @@
 
           var lineMaker = d3
             .line() //<16>
-            .x((d) => scX(d['x'])) //<17>
+            .x((d) => scX(d['x'])) //<17> 画线要用图形坐标，不是原始数据
             .y((d) => scY1(d['y1']));
 
           d3.select('#ds1') //<18>
@@ -69,15 +69,15 @@
             .attr('stroke', 'teal')
             .attr('d', lineMaker(data)); //<20>
 
-          lineMaker.y((d) => scY2(d['y2'])); //<21>
+          lineMaker.y((d) => scY2(d['y2'])); //<21> 复用并修改生成器
 
           d3.select('#ds2') //<22>
             .append('path')
-            .attr('fill', 'none')
+            .attr('fill', 'none') // 这里不能注释掉，否则路径与起点处的横轴包围形成的多边形会显示blue
             .attr('stroke', 'cyan')
             .attr('d', lineMaker(data));
 
-          d3.select('#ds2').attr('fill', 'red'); //<23>
+          //d3.select('#ds2').attr('fill', 'red'); //<23>
         });
       }
     </script>

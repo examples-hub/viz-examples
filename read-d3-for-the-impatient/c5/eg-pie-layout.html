@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-with,initial-scale=1" />
+    <title>d3-eg</title>
+    <script src="../assets/js/d3.js"></script>
+    <!-- <script src="examples-demo1.js"></script> -->
+    <style type="text/css">
+      /* ll */
+    </style>
+  </head>
+
+  <body onload="makePie()">
+    <div id="root">hello 世界</div>
+    <!-- <svg id="demo1" width="600" height="300" style="background: whitesmoke" /> -->
+    <div>
+      <svg id="pie" width="600" height="350" style="background: whitesmoke" />
+    </div>
+    <script type="text/javascript">
+      // ..
+      function makePie() {
+        var data = [
+          { name: 'Jim', votes: 20 },
+          { name: 'Sue', votes: 10 },
+          { name: 'Bob', votes: 40 },
+          { name: 'Ann', votes: 25 },
+          { name: 'Dan', votes: 5 },
+        ];
+
+        var pie = d3
+          .pie()
+          .value((d) => d.votes)
+          .padAngle(0.025)(data); //<1> 利用pie layout计算原始数据对应的图形数据
+
+        var arcMkr = d3
+          .arc()
+          .innerRadius(50)
+          .outerRadius(150) //<2> 配置arc generator
+          .cornerRadius(10);
+
+        var scC = d3
+          .scaleOrdinal(d3.schemePastel2) //<3>
+          .domain(pie.map((d) => d.index)); //<4>
+
+        var g = d3
+          .select('#pie') //<5>
+          .append('g')
+          .attr('transform', 'translate(300, 175)');
+
+        g.selectAll('path')
+          .data(pie)
+          .enter()
+          .append('path') //<6>
+          .attr('d', arcMkr) //<7>
+          .attr('fill', (d) => scC(d.index))
+          .attr('stroke', 'grey');
+
+        g.selectAll('text')
+          .data(pie)
+          .enter()
+          .append('text') //<8>
+          .text((d) => d.data.name) //<9>
+          .attr('x', (d) => arcMkr.innerRadius(85).centroid(d)[0]) //<10>
+          .attr('y', (d) => arcMkr.innerRadius(85).centroid(d)[1])
+          .attr('font-family', 'sans-serif')
+          .attr('font-size', 14)
+          .attr('text-anchor', 'middle');
+      }
+    </script>
+  </body>
+</html>

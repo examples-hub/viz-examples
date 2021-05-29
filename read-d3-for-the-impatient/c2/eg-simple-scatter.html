@@ -11,18 +11,17 @@
   </head>
 
   <body onload="makeDemo1()">
-    <div id="root">hello 世界</div>
+    <div id="root">hello 绘图 graphics</div>
     <svg id="demo1" width="600" height="300" style="background: whitesmoke" />
     <script type="text/javascript">
       // ..
       function makeDemo1() {
-        //<1>
         d3.tsv('../data/examples-simple.tsv').then(function (data) {
           d3.select('svg') //<5>
-            .selectAll('circle') //<6>
-            .data(data) //<7>
-            .enter() //<8>
-            .append('circle') //<9>
+            .selectAll('circle') //<6> 这里返回空元素集合
+            .data(data) //<7> d3会试图建立元素与数据一对一的映射关系，这里返回空元素集合
+            .enter() //<8> 选择没有成功建立映射关系的剩余数据
+            .append('circle') //<9> 对每个剩余数据创建一个circle并添加到dom
             .attr('r', 5)
             .attr('fill', 'green')
             .attr('cx', function (d) {

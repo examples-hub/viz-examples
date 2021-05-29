@@ -12,8 +12,8 @@
   </head>
 
   <body onload="makeList()">
-    <div id="root">hello 世界</div>
-    <svg id="demo1" width="600" height="300" style="background: whitesmoke" />
+    <div id="root">hello dom事件</div>
+    <!-- <svg id="demo1" width="600" height="300" style="background: whitesmoke" /> -->
     <script type="text/javascript">
       // ..
       function makeList() {
@@ -21,16 +21,19 @@
 
         d3.select('body') //<2>
           .append('ul')
-          .selectAll('li') //<3>
+          .selectAll('li') //<3> 这里返回空元素集合
           .data(vs)
           .enter() //<4>
           .append('li')
-          .text((d) => d) //<5>
+          //<5> 添加数据到dom
+          .text((d) => d)
+          //.text((d) => `<h2>${d}</h2>`) // 注意这里不会显示为html元素；创建元素与设置样式尽量分离
+          //.text((d) => `&lt;h2&gt;${d}</h2>`)
           .on('click', function () {
             this.toggleState = !this.toggleState; // <3> <4>
-            d3.select(this) // <5>
+            d3.select(this) // <5> 创建selection是为了使用链式调用
               .transition()
-              .duration(1250) // <6>
+              .duration(1000) // <6>
               .style('color', this.toggleState ? 'red' : 'black'); // <7>
           });
       }

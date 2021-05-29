@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-with,initial-scale=1" />
+    <title>o-plot</title>
+    <script src="./assets/js/d3.v6.js"></script>
+    <script src="./assets/js/observablehq-plot.umd.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/d3@6"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.1"></script> -->
+    <script></script>
+
+    <style type="text/css">
+      /* ll */
+    </style>
+  </head>
+
+  <body>
+    <div id="root">hello observablehq/plot</div>
+    <div id="gg1"></div>
+    <div id="gg2"></div>
+    <div id="gg3"></div>
+    <div id="gg4"></div>
+    <script type="text/javascript">
+      // ..
+      d3.csv(
+        // 'https://static.observableusercontent.com/files/31ca24545a0603dce099d10ee89ee5ae72d29fa55e8fc7c9ffb5ded87ac83060d80f1d9e21f4ae8eb04c1e8940b7287d179fe8060d887fb1f055f430e210007c?response-content-disposition=attachment%3Bfilename*%3DUTF-8%27%27athletes.csv',
+        './data/athletes.csv',
+        d3.autoType,
+      ).then((data) => {
+        // 散点分布图
+        var options1 = {
+          marks: [Plot.dot(data, { x: 'weight', y: 'height', stroke: 'sex' })],
+        };
+
+        // 散点分布 + 透明度
+        var options2 = {
+          marks: [
+            Plot.rect(
+              data,
+              Plot.bin(
+                { fillOpacity: 'count' },
+                { x: 'weight', y: 'height', fill: 'sex' },
+              ),
+            ),
+          ],
+        };
+
+        // 柱状图
+        var options3 = {
+          // x: {
+          //   label: 'Weight',
+          // },
+          // y: {
+          //   label: 'Height',
+          // },
+          marks: [
+            Plot.rectY(
+              data,
+              Plot.binX({ y: 'count' }, { x: 'weight', fill: 'sex' }),
+            ),
+          ],
+        };
+
+        // facet
+        var options4 = {
+          grid: true,
+          facet: {
+            data: data,
+            y: 'sex',
+          },
+          marks: [
+            Plot.rectY(
+              data,
+              Plot.binX({ y: 'count' }, { x: 'weight', fill: 'sex' }),
+            ),
+            Plot.ruleY([0]),
+          ],
+        };
+
+        document.getElementById('gg1').appendChild(Plot.plot(options1));
+        document.getElementById('gg2').appendChild(Plot.plot(options2));
+        document.getElementById('gg3').appendChild(Plot.plot(options3));
+        document.getElementById('gg4').appendChild(Plot.plot(options4));
+      });
+    </script>
+  </body>
+</html>
